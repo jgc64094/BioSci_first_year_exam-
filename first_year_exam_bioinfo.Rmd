@@ -1,0 +1,45 @@
+---
+title: "first_year_exam_bioinfo"
+author: "Jose Chacon PID: A59010515"
+date: "7/17/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+variants<- read.csv('covid19_variants.csv') #loading csv to environment
+```
+
+```{r}
+df <- variants[c('date', 'variant_name','percentage')] # retrieving only 3 columns from dataset
+head(df) #quick snap of what our df looks like
+```
+
+```{r}
+
+df2<-df[!(df$variant_name=="Total"),] # filtering data, want to get rid of "Total" rows
+```
+
+
+
+```{r}
+library(ggplot2)
+df2$date <- as.Date(df2$date) #need this code for R to interpret dates
+
+g <-   ggplot(df2, aes(x = date, y = percentage, group=variant_name)) +
+    geom_line(aes(color=variant_name))+
+    labs(title = "Covid-19 Variants in California", x="", y="Percentage of sequenced specimens")+
+    scale_x_date(date_labels = "%b %Y",date_breaks = "1 month")+ # provides date format for the x axis
+    theme(axis.text.x = element_text(angle = 45, vjust=0.5))+
+    labs(tag = "Data Source: <https://www.cdph.ca.gov/>") +
+    theme(plot.tag.position = c(0.70, 0.02)) # adds an annotation at the bottom of the figure
+g
+
+```
+
+
+
